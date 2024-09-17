@@ -1,6 +1,6 @@
 ---
 title: "My First Post"
-date: 2024-09-18 12:00:00 +0000
+date: 2024-09-17 12:00:00 +0000
 categories: [category1, subcategory]
 tags: [tag1, tag2]
 ---
