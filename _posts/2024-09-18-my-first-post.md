@@ -13,4 +13,4 @@ This is my first blog post on Chirpy theme! It's a simple and elegant theme for 
 - Customizable
 
 You can learn more about Chirpy [here](https://github.com/cotes2020/jekyll-theme-chirpy).
-![Chirpy Logo](https://github.com/cotes2020/jekyll-theme-chirpy/raw/master/assets/img/sample.jpg)
+
