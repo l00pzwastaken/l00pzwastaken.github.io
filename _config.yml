@@ -16,7 +16,7 @@ timezone: Atlantic/Azores
 
 title: L00PZ # the main title
 
-tagline: A Bug Bounty Blog # it will display as the subtitle
+tagline: A Security Blog # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   Bug Bounty Blog & tips and tricks for hunting.
