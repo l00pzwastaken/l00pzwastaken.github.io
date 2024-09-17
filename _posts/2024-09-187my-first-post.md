@@ -4,6 +4,10 @@ date: 2024-09-17 12:00:00 +0000
 categories: [category1, subcategory]
 tags: [tag1, tag2]
 ---
+---
+author: 12345678
+---
+
 ## Introduction
 This is my first blog post on Chirpy theme! It's a simple and elegant theme for Jekyll blogs.
 
