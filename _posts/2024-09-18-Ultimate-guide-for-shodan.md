@@ -5,7 +5,7 @@ image:
   path: https://i.pinimg.com/originals/b9/0a/cf/b90acfa130e90e678cf51941d196448f.gif
 categories: [Recon]
 tags: [Shodan]
-description: Ultimate Guide for Shodan for Reconnaissance
+description: Ultimate Guide for Shodan for Reconnaissance & orgnization hunting
 toc: true 
 author: l00pz 
 ---
