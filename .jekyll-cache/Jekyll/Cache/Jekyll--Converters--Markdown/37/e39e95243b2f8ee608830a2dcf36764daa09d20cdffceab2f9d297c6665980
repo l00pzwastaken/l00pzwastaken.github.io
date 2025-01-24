@@ -1,0 +1,546 @@
+I"Ew<h2 id="introduction">Introduction</h2>
+
+<p>Hello guys ! long time hehe see no:) yea lack of consistency yea but will be posting new blogs every week now</p>
+
+<p>And btw <strong>happy new year</strong> everyone hope 2024 was great for you. Learnt a lot things in 2024 lets see how the 2025 will be so I was like lets start some weekly blog series. Yea like frey :P</p>
+
+<p>last week was little bit off because of trips and in this week I was studying some writups as usual and was hunting yea found some PII leak bug which later was confirmed by frey yes its PII. Reported it let’s see how it goes will inform you guys. Ok now enough talk let’s start with the topic ? shall we</p>
+
+<h2 id="google-dorking">Google Dorking</h2>
+
+<p>We all search something on search engines (google, duck duck go, bing, brave, etc), Search engines provide us results on our input feed to it. while searching we only search with words direclty but there are conditions or operators for all search engines for finding exact what we are finding. Yes like finding pdf only in search results <code class="language-plaintext highlighter-rouge">ext:pdf</code> or <code class="language-plaintext highlighter-rouge">filetype:pdf</code>.</p>
+
+<p>Hackers use it for finding sensitive files or even mistakely exposed files. Its also called as <strong>google hacking</strong> or <strong>Google Dorking</strong>. There is whole site on google dorking and people creativly submit their own dorks on this network <a target="_blank" href="https://www.exploit-db.com/google-hacking-database">Google hacking website </a>. Hey not always google dorks are used to find senstive file we can also search for those login pages or register pages which are not easily visible on the site.</p>
+
+<p>basic operators and condition every bug bounty hunters should know are :</p>
+
+<h2 id="basic-operators">Basic Operators</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Operator</strong></th>
+      <th><strong>Example</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">site:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">site:example.com</code> - Searches only within <code class="language-plaintext highlighter-rouge">example.com</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">inurl:login</code> - Finds URLs containing the word <code class="language-plaintext highlighter-rouge">login</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intitle:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">intitle:"admin panel"</code> - Searches for pages with “admin panel” in the title.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf</code> - Finds all PDF files.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ext:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ext:doc</code> - Finds documents with the <code class="language-plaintext highlighter-rouge">.doc</code> extension.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">after:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">after:2024</code> - Finds results updated after 2022.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">before:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">before:2023</code> - Finds results updated before 2021.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">OR</code></td>
+      <td><code class="language-plaintext highlighter-rouge">admin OR login</code> - Finds results containing either <code class="language-plaintext highlighter-rouge">admin</code> or <code class="language-plaintext highlighter-rouge">login</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AND</code></td>
+      <td><code class="language-plaintext highlighter-rouge">admin AND password</code> - Finds results containing both <code class="language-plaintext highlighter-rouge">admin</code> and <code class="language-plaintext highlighter-rouge">password</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">*</code></td>
+      <td><code class="language-plaintext highlighter-rouge">*admin*</code> - Matches any word or phrase around <code class="language-plaintext highlighter-rouge">admin</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">"</code></td>
+      <td><code class="language-plaintext highlighter-rouge">"confidential report"</code> - Finds the exact phrase <code class="language-plaintext highlighter-rouge">confidential report</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-site:example.com</code> - Excludes results from <code class="language-plaintext highlighter-rouge">example.com</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cache:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">cache:example.com</code> - Shows the cached version of <code class="language-plaintext highlighter-rouge">example.com</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">allinurl:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">allinurl:admin login</code> - Finds URLs containing both <code class="language-plaintext highlighter-rouge">admin</code> and <code class="language-plaintext highlighter-rouge">login</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">allintitle:</code></td>
+      <td><code class="language-plaintext highlighter-rouge">allintitle:secure login</code> - Finds pages with both <code class="language-plaintext highlighter-rouge">secure</code> and <code class="language-plaintext highlighter-rouge">login</code> in the title.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<p>This were some basic operators which with combination can help us a lot in google dorking and finding information specificly information disclourse or PII.</p>
+
+<h2 id="sensitive-dorks">Sensitive Dorks</h2>
+
+<p>Sensitive Dorks are used to find the sensitve file and hidden files which website does not want to show or mistakely exposed to the google ? yes such file get disclosed because developers don’t add deindex tag or if they have specific endpoint for uploading the such documents like <code class="language-plaintext highlighter-rouge">admin/information/userdata1.pdf</code> while such enpoint should be disallowed using robots.txt but sometimes developers forgot to add such enpoint directory to robots.txt which cause to index on search engines like google.</p>
+
+<p>Dorks I use for finding sensitive files are :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Dork</strong></th>
+      <th><strong>Purpose</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:env "DB_PASSWORD"</code></td>
+      <td>Find <code class="language-plaintext highlighter-rouge">.env</code> files with database credentials.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:yaml OR filetype:yml "api_key"</code></td>
+      <td>Search for YAML files with API keys.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:json "secret"</code></td>
+      <td>Locate JSON files containing sensitive keys.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:log "error"</code></td>
+      <td>Exposed log files with errors and stack traces.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:txt "credentials"</code></td>
+      <td>Text files with stored credentials.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:bak OR filetype:backup "password"</code></td>
+      <td>Backup files with potential sensitive data.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:sql "INSERT INTO"</code></td>
+      <td>SQL dumps with data inserts (often sensitive).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf "confidential"</code></td>
+      <td>PDFs labeled as confidential.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:xlsx OR filetype:csv "email"</code></td>
+      <td>Spreadsheets with user data like emails or contact info.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:conf "password"</code></td>
+      <td>Configuration files with exposed credentials.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:/config.json</code></td>
+      <td>Direct access to configuration files.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:".git/config"</code></td>
+      <td>Exposed Git configuration files.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:/swagger.json</code></td>
+      <td>Open API specs, often containing endpoints and tokens.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:/wp-content/uploads/</code></td>
+      <td>Look for exposed uploads in WordPress sites.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/api/" filetype:json</code></td>
+      <td>API endpoints with JSON responses.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/logs/" filetype:log</code></td>
+      <td>Server logs in public directories.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intitle:"Index of /" filetype:sql</code></td>
+      <td>Directory listings with SQL files. <em>(Rare but still useful).</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<p>Some my favourties Dorks below : This are so unique and creative ;)</p>
+
+<p><code class="language-plaintext highlighter-rouge">scanned by camscanner filetype:pdf</code> - I was thinking about pdfs later while scanning my own document found this watermark on the pdf “scanned by camscanner” yes lot of users use this app for scanning the pdfs and even when they upload on the site with unique name or something <code class="language-plaintext highlighter-rouge">eufebubfbdskksdbk</code> lmo still we can search it with that watermark. so using <code class="language-plaintext highlighter-rouge">OR</code> operator I crafted dork <br /></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">"scanned with camscanner" OR "scanned by Adobe Scan" OR "scanned with scanner pro" filetype:pdf OR filetype:jpg</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"scan_2023" OR "scanned_doc" OR "scanned_id" OR "docscan" OR "ID_scan" filetype:pdf OR filetype:png</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"scanned passport" OR "scanned license" OR "scanned certificate" OR "scanned ID" filetype:pdf OR filetype:jpg</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"Epson Scan" OR "Canon Scanner" OR "HP ScanJet" filetype:pdf OR filetype:tiff</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"document_2023" OR "scan_2023-*" OR "export_2023" OR "saved_2023" filetype:pdf OR filetype:doc</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"passport" OR "tax_form" OR "social_security" OR "license" OR "w2" OR "1099" filetype:pdf OR filetype:xls</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"confidential" OR "restricted" AND "scan" OR "passport" filetype:pdf OR filetype:doc</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">"passport" OR "license" OR "ID" inurl:"/uploads/" filetype:* OR filetype:bmp OR filetype:tiff</code><br /></li>
+  <li><code class="language-plaintext highlighter-rouge">inurl:"/documents/" OR inurl:"/scans/" "passport" OR "scan" OR "confidential" filetype:pdf</code><br /></li>
+</ul>
+
+<h2 id="action-based-dorks-for-web-interactions">Action-Based Dorks for Web Interactions</h2>
+
+<p>Upload based dorks are dorks for web interactions and where we do interaction specifically we can play here with <code class="language-plaintext highlighter-rouge">file upload</code> and <code class="language-plaintext highlighter-rouge">https methods</code>. or find action based information add items or sometimes companies ask for the feedback forms we can use it for for testing vulnerabilities. you may use this action based dorks for finding hidden login forms or register forms like sometimes companies have <code class="language-plaintext highlighter-rouge">partner</code> logins or <code class="language-plaintext highlighter-rouge">dev</code> logins you can try auth testing there.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Dork</strong></th>
+      <th><strong>Purpose</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/upload"</code></td>
+      <td>Find pages that allow file uploads.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/file-upload"</code></td>
+      <td>Target file upload functionality pages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intitle:"Upload File"</code></td>
+      <td>Locate pages that allow users to upload files.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/submit"</code></td>
+      <td>Locate form submission pages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/register"</code></td>
+      <td>Find user registration forms.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/login"</code></td>
+      <td>Locate login forms for user authentication.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/login" inurl:"submit"</code></td>
+      <td>Find login forms with “submit” action.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intitle:"Post Form"</code></td>
+      <td>Look for post submission forms (often used in contact forms).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/upload" filetype:jpg</code></td>
+      <td>Find image upload pages, potentially vulnerable to file type restrictions.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/add" inurl:"submit"</code></td>
+      <td>Look for forms used for adding content (such as comments, posts, etc.).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/contact" inurl:"submit"</code></td>
+      <td>Find contact forms used for submitting inquiries or feedback.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/add-item"</code></td>
+      <td>Find pages for adding items to databases (e.g., e-commerce).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intitle:"index of" "upload"</code></td>
+      <td>Directory listings that contain file upload features.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/file" "upload"</code></td>
+      <td>Look for any page that may deal with file uploads.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/upload" "submit"</code></td>
+      <td>Pages that allow users to submit files for upload.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/create" "submit"</code></td>
+      <td>Pages that allow content creation, such as posts or items.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/feedback" inurl:"submit"</code></td>
+      <td>Locate feedback or survey submission forms.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">inurl:"/api/upload" inurl:"submit"</code></td>
+      <td>Find pages or endpoints where files are uploaded via forms.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="juicy-files">Juicy Files</h2>
+
+<p>Juciy files sometimes might leak internal leaks documents, reports and juicy slack invites, matrix invites links are leaked while creating the manuals for new employyes or for presting pptx. such file may leak important information about the companies so use this dorks for improving your Infromation discolures.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Dork</strong></th>
+      <th><strong>Purpose</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"internal use only"</code></td>
+      <td>Search for PDFs marked as “internal use only” that might be exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"not for public"</code></td>
+      <td>Find PDFs labeled “not for public” but potentially exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"internal confidential"</code></td>
+      <td>Find Word files marked as “internal” or “confidential” but publicly accessible.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:xls inurl:"internal report"</code></td>
+      <td>Look for Excel files containing internal reports.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:doc inurl:"private"</code></td>
+      <td>Search for Word documents intended for private use but exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:csv inurl:"internal data"</code></td>
+      <td>Find CSV files containing sensitive internal data.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:log inurl:"private"</code></td>
+      <td>Look for private log files that may be exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:bak inurl:"backup"</code></td>
+      <td>Search for backup files that are intended to be private but exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:md inurl:"internal notes"</code></td>
+      <td>Find Markdown files containing internal notes or secrets.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:json inurl:"internal use only"</code></td>
+      <td>Look for JSON files marked for internal use that are publicly accessible.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:xls inurl:"internal access"</code></td>
+      <td>Find Excel files that should be restricted to internal use only.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pptx inurl:"internal presentation"</code></td>
+      <td>Search for PowerPoint presentations marked for internal use.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"restricted access"</code></td>
+      <td>Look for PDFs labeled “restricted access” but exposed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:txt inurl:"sensitive information"</code></td>
+      <td>Find text files containing sensitive information not meant for public access.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:xml inurl:"internal resources"</code></td>
+      <td>Look for XML files containing internal resources or configurations.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:sql inurl:"dump"</code></td>
+      <td>Find SQL dump files containing sensitive or database information.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:git inurl:"/.git"</code></td>
+      <td>Search for exposed .git directories that might contain sensitive code or history.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:yaml inurl:"config"</code></td>
+      <td>Find YAML files that may contain configuration or secret information.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:json inurl:"secret"</code></td>
+      <td>Find JSON files containing secret keys or sensitive data.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:sql inurl:"db_backup"</code></td>
+      <td>Look for exposed database backup files that might contain sensitive information.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:git inurl:"repo"</code></td>
+      <td>Search for exposed Git repositories containing sensitive code.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:json inurl:"api_keys"</code></td>
+      <td>Find JSON files that might contain API keys.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="pii-dorks-personally-identifiable-information">PII Dorks (Personally Identifiable Information)</h2>
+<p>PII Is major business loss so companies always make this bug critical as possible because it litreally affects the user privacy or information leakage of the customer which are asset for the company that’s why they keep this information secure but sometimes this can be leaked using google dorks check below google dorks for information:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Dork</strong></th>
+      <th><strong>Purpose</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"email:" inurl:"example.com"</code></td>
+      <td>Find pages or documents exposing email addresses.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"username:" inurl:"example.com"</code></td>
+      <td>Search for usernames exposed on pages or documents.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"name:" inurl:"example.com"</code></td>
+      <td>Find pages with exposed names, possibly of employees or users.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"contact:" inurl:"example.com"</code></td>
+      <td>Search for contact information exposed in documents or pages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"phone:" inurl:"example.com"</code></td>
+      <td>Look for phone numbers exposed in documents or pages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"slack.com" inurl:"example.com" intext:"join"</code></td>
+      <td>Find Slack invite links in documents or webpages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"zoom.us/j" inurl:"example.com" intext:"join"</code></td>
+      <td>Find Zoom meeting invite links exposed in documents or pages.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"teams.microsoft.com" inurl:"example.com" intext:"join"</code></td>
+      <td>Search for Microsoft Teams meeting invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"google.com" inurl:"example.com" intext:"meet.google"</code></td>
+      <td>Find Google Meet invite links exposed in documents.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"slack invite" inurl:"example.com"</code></td>
+      <td>Search for exposed Slack invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">intext:"zoom link" inurl:"example.com"</code></td>
+      <td>Find pages with Zoom meeting links exposed.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="dorks-to-find-company-onboarding-or-invite-documents-zoom-slack-teams">Dorks to Find Company Onboarding or Invite Documents (Zoom, Slack, Teams)</h2>
+
+<p>Wanna get into the internal teams meeting platforms like zoom/slack/teams you can search for specific dorks for finding the invite links for finding the team invite links where developers join meets/share erros/ feedback and critical infromation of the current development.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Dork</strong></th>
+      <th><strong>Purpose</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"join zoom"</code></td>
+      <td>Find PDFs containing Zoom meeting invite links, possibly for onboarding or team meetings.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"join zoom"</code></td>
+      <td>Search for Word documents containing Zoom meeting invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"join slack"</code></td>
+      <td>Find PDFs with Slack invite links for company workspaces.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"join slack"</code></td>
+      <td>Search for Word documents containing Slack workspace invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"join teams"</code></td>
+      <td>Find PDFs with Microsoft Teams meeting or workspace invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"join teams"</code></td>
+      <td>Search for Word documents with Microsoft Teams invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"meet.google"</code></td>
+      <td>Look for PDFs containing Google Meet invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"meet.google"</code></td>
+      <td>Find Word documents containing Google Meet invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"onboarding" intext:"join us"</code></td>
+      <td>Look for onboarding PDFs that might contain meeting or workspace invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"onboarding" intext:"join us"</code></td>
+      <td>Find Word documents used for company onboarding that contain invite links (Zoom, Slack, Teams).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"invitation"</code></td>
+      <td>Find PDF documents that may contain invitation links to meetings or workspaces.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"invitation"</code></td>
+      <td>Look for Word documents containing invitation links for meetings or communication platforms.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"welcome"</code></td>
+      <td>Search for onboarding or welcome PDFs with communication platform links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"welcome"</code></td>
+      <td>Find Word documents with welcome messages containing join links for platforms like Zoom or Teams.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"meeting invite"</code></td>
+      <td>Search for PDF documents with meeting invites, possibly containing Zoom links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"slack invite"</code></td>
+      <td>Find Word documents containing Slack invite links for meetings or channels.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:pdf inurl:"example.com" intext:"onboard" intext:"slack invite"</code></td>
+      <td>Look for PDFs related to company onboarding with Slack invite links.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filetype:docx inurl:"example.com" intext:"onboard" intext:"microsoft teams"</code></td>
+      <td>Find Word documents used for onboarding with Microsoft Teams invite links.</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote class="prompt-info">
+  <p><strong>Did you know?</strong> The leak of <strong>Grand Theft Auto VI (GTA 6)</strong> was due to unauthorized access to Rockstar Games’ internal chat and meeting platforms, including <strong>Slack</strong>, where the hacker obtained sensitive development materials.</p>
+</blockquote>
+
+<h2 id="learning-how-to-craft-a-dork-according-to-requirement--">Learning How to craft a dork according to requirement :-</h2>
+
+<p>Crafting dorks according to the requirement requires time and practice but it can help you in the long run. Custom dorks can help you to detect adpat and piot according to the <code class="language-plaintext highlighter-rouge">target.com</code></p>
+
+<h2 id="quiz-time">Quiz Time</h2>
+
+<div class="gcse-search"></div>
+
+<script async="" src="https://cse.google.com/cse.js?cx=1678d51eac47d42a6">
+</script>
+
+:ET

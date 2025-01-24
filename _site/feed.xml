@@ -1,0 +1,71 @@
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://localhost:4000/</id>
+  <title>L00PZ - A Security blog</title>
+  <subtitle>Bug Bounty Blog &amp; tips and tricks for hunting.</subtitle>
+  <updated>2025-01-08T15:27:33-01:00</updated>
+  <author>
+    <name>l00pz</name>
+    <uri>http://localhost:4000/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en"
+    href="http://localhost:4000/"/>
+  <generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator>
+  <rights> © 2025 l00pz </rights>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>Google Dorking Guide and weekly review</title>
+    <link href="http://localhost:4000/posts/Google-Dorks-Guide-Guide-weekly-review/" rel="alternate" type="text/html" title="Google Dorking Guide and weekly review" />
+    <published>2025-01-07T23:00:00-01:00</published>
+  
+    <updated>2025-01-07T23:00:00-01:00</updated>
+  
+    <id>http://localhost:4000/posts/Google-Dorks-Guide-Guide-weekly-review/</id>
+    <content src="http://localhost:4000/posts/Google-Dorks-Guide-Guide-weekly-review/" />
+    <author>
+      <name>l00pz</name>
+    </author>
+
+  
+    
+    <category term="Recon" />
+    
+  
+
+  <summary>Google Dorking Guide for improving attack surface.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Ultimate Guide for Shodan for Reconnaissance</title>
+    <link href="http://localhost:4000/posts/Ultimate-guide-for-shodan/" rel="alternate" type="text/html" title="Ultimate Guide for Shodan for Reconnaissance" />
+    <published>2024-09-18T00:00:00+00:00</published>
+  
+    <updated>2024-09-18T09:49:57+00:00</updated>
+  
+    <id>http://localhost:4000/posts/Ultimate-guide-for-shodan/</id>
+    <content src="http://localhost:4000/posts/Ultimate-guide-for-shodan/" />
+    <author>
+      <name>l00pz</name>
+    </author>
+
+  
+    
+    <category term="Recon" />
+    
+  
+
+  <summary>Ultimate Guide for Shodan for Reconnaissance &amp;amp; orgnization hunting</summary>
+
+  </entry>
+
+</feed>
+
+

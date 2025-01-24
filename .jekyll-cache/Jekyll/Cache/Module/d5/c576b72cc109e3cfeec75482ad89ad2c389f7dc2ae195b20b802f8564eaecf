@@ -1,0 +1,38 @@
+I"‡<!-- Get 5 last posted/updated posts -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <section id="access-lastmod">
+    <h2 class="panel-heading">Recently Updated</h2>
+    <ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2">
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/Google-Dorks-Guide-Guide-weekly-review/">Google Dorking Guide and weekly review</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/Ultimate-guide-for-shodan/">Ultimate Guide for Shodan for Reconnaissance</a>
+        </li>
+      
+    </ul>
+  </section>
+  <!-- #access-lastmod -->
+
+:ET
