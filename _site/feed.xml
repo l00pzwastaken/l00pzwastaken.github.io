@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>L00PZ - A Security blog</title>
   <subtitle>Bug Bounty Blog &amp; tips and tricks for hunting.</subtitle>
-  <updated>2025-01-08T15:27:33-01:00</updated>
+  <updated>2025-02-03T03:36:08-01:00</updated>
   <author>
     <name>l00pz</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,30 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Restart Do Again Repeat</title>
+    <link href="http://localhost:4000/posts/Restart-Do-Again-Repeat/" rel="alternate" type="text/html" title="Restart Do Again Repeat" />
+    <published>2025-02-02T23:00:00-01:00</published>
+  
+    <updated>2025-02-02T23:00:00-01:00</updated>
+  
+    <id>http://localhost:4000/posts/Restart-Do-Again-Repeat/</id>
+    <content src="http://localhost:4000/posts/Restart-Do-Again-Repeat/" />
+    <author>
+      <name>l00pz</name>
+    </author>
+
+  
+    
+    <category term="Recon" />
+    
+  
+
+  <summary>Subdomains Enumeration techniques and weekly updates</summary>
+
+  </entry>
 
   
   <entry>
@@ -48,7 +72,7 @@
     <link href="http://localhost:4000/posts/Ultimate-guide-for-shodan/" rel="alternate" type="text/html" title="Ultimate Guide for Shodan for Reconnaissance" />
     <published>2024-09-18T00:00:00+00:00</published>
   
-    <updated>2024-09-18T09:49:57+00:00</updated>
+    <updated>2024-09-18T00:00:00+00:00</updated>
   
     <id>http://localhost:4000/posts/Ultimate-guide-for-shodan/</id>
     <content src="http://localhost:4000/posts/Ultimate-guide-for-shodan/" />
