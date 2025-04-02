@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Realtime Hacker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'Cascadia Code', 'Source Code Pro', monospace;
+            margin: 0;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            padding: 12px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        h1 {
+            color: #58a6ff;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h1::before {
+            content: "🔐";
+            font-size: 18px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pill {
+            background-color: #161b22;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #30363d;
+        }
+
+        .pill label {
+            color: #8b949e;
+            font-weight: 600;
+        }
+
+        .pill select, .pill input {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            border: none;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .pill select:focus, .pill input:focus {
+            outline: 1px solid #1f6feb;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 15px;
+            flex-grow: 1;
+            min-height: calc(100vh - 80px);
+        }
+
+        .token-column {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .decoded-column {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .token-preview {
+            background-color: #161b22;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: nowrap;
+            font-size: 13px;
+            border: 1px solid #30363d;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .token-segment {
+            display: inline-block;
+            padding: 2px;
+        }
+
+        .header-segment {
+            color: #79c0ff;
+        }
+
+        .payload-segment {
+            color: #7ee787;
+        }
+
+        .signature-segment {
+            color: #ff7b72;
+        }
+
+        .dot {
+            color: #c9d1d9;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+
+        .panel {
+            background-color: #161b22;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .panel-header {
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1c2128;
+        }
+
+        .header-panel .panel-header {
+            border-left: 3px solid #79c0ff;
+        }
+
+        .payload-panel .panel-header {
+            border-left: 3px solid #7ee787;
+        }
+
+        .signature-panel .panel-header {
+            border-left: 3px solid #ff7b72;
+        }
+
+        .panel-title {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-title {
+            color: #79c0ff;
+        }
+
+        .payload-title {
+            color: #7ee787;
+        }
+
+        .signature-title {
+            color: #ff7b72;
+        }
+
+        .panel-content {
+            padding: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        textarea, .editor {
+            width: 100%;
+            height: 100%;
+            background-color: #161b22;
+            color: #c9d1d9;
+            border: none;
+            resize: none;
+            font-family: inherit;
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 150px;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background-color: rgba(46, 160, 67, 0.2);
+            color: #2ea043;
+        }
+
+        .badge-warning {
+            background-color: rgba(210, 153, 34, 0.2);
+            color: #d29922;
+        }
+
+        .badge-danger {
+            background-color: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+        }
+
+        .badge-info {
+            background-color: rgba(88, 166, 255, 0.2);
+            color: #58a6ff;
+        }
+
+        .badge-change {
+            background-color: rgba(219, 97, 162, 0.2);
+            color: #db61a2;
+            animation: pulse 2s infinite;
+        }
+
+        .notification {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(88, 166, 255, 0.9);
+            color: #0d1117;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .show-notification {
+            animation: fadeInOut 1.5s ease;
+        }
+
+        .signature-content {
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .signature-content code {
+            display: block;
+            background-color: rgba(110, 118, 129, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .token-hint {
+            background-color: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .token-hint strong {
+            color: #58a6ff;
+        }
+
+        .error-msg {
+            background-color: rgba(248, 81, 73, 0.1);
+            border-left: 3px solid #f85149;
+            padding: 8px;
+            margin-top: 10px;
+            color: #f85149;
+            font-size: 12px;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .timestamp {
+            color: #8b949e;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .payload-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .payload-item {
+            display: flex;
+            font-size: 11px;
+            color: #8b949e;
+        }
+
+        .payload-item strong {
+            min-width: 35px;
+            color: #58a6ff;
+        }
+
+        .typing-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: #8b949e;
+            background-color: rgba(22, 27, 34, 0.8);
+            padding: 2px 6px;
+            border-radius: 10px;
+            opacity: 0;
+        }
+
+        .typing {
+            opacity: 1;
+        }
+
+        .ellipsis:after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 10px;
+            color: #8b949e;
+            margin-top: 10px;
+            padding-top: 5px;
+            border-top: 1px solid #30363d;
+        }
+
+        .algorithm-change {
+            animation: flash 0.5s;
+        }
+
+        @keyframes flash {
+            0% { background-color: rgba(219, 97, 162, 0.2); }
+            100% { background-color: transparent; }
+        }
+
+        .debug-info {
+            position: fixed;
+            bottom: 5px;
+            left: 5px;
+            font-size: 10px;
+            color: #6e7681;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f444e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JWT Decoder & Manipulator</h1>
+            <div class="controls">
+                <div class="pill">
+                    <label for="algorithm">Algorithm</label>
+                    <select id="algorithm">
+                        <option value="HS256">HS256</option>
+                        <option value="HS384">HS384</option>
+                        <option value="HS512">HS512</option>
+                        <option value="RS256">RS256</option>
+                        <option value="RS384">RS384</option>
+                        <option value="RS512">RS512</option>
+                        <option value="ES256">ES256</option>
+                        <option value="ES384">ES384</option>
+                        <option value="ES512">ES512</option>
+                        <option value="PS256">PS256</option>
+                        <option value="PS384">PS384</option>
+                        <option value="PS512">PS512</option>
+                        <option value="none">none</option>
+                    </select>
+                </div>
+                <div class="pill">
+                    <label for="secret-key">Secret Key</label>
+                    <input type="text" id="secret-key" placeholder="For HMAC algs">
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="token-column">
+                <div class="token-preview">
+                    <span class="token-segment header-segment" id="header-segment"></span>
+                    <span class="dot">.</span>
+                    <span class="token-segment payload-segment" id="payload-segment"></span>
+                    <span class="dot">.</span>
+                    <span class="token-segment signature-segment" id="signature-segment"></span>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">JWT Token</span>
+                        <span id="alg-change-indicator" class="badge"></span>
+                    </div>
+                    <div class="panel-content">
+                        <textarea id="jwt-input" placeholder="Paste your JWT token here..."></textarea>
+                        <div id="jwt-notification" class="notification">Token updated</div>
+                    </div>
+                </div>
+                <div class="token-hint">
+                    <strong>Tip:</strong> Modify any section and the token will update automatically. Changing algorithm will preserve your payload data.
+                </div>
+            </div>
+            
+            <div class="decoded-column">
+                <div class="panel header-panel">
+                    <div class="panel-header">
+                        <span class="panel-title header-title">Header</span>
+                        <span id="header-badge" class="badge badge-info">EDIT DIRECTLY</span>
+                    </div>
+                    <div class="panel-content">
+                        <textarea id="header-editor" spellcheck="false"></textarea>
+                        <div id="header-notification" class="notification">Header updated</div>
+                        <div id="header-typing" class="typing-indicator">parsing<span class="ellipsis"></span></div>
+                    </div>
+                </div>
+                
+                <div class="panel payload-panel">
+                    <div class="panel-header">
+                        <span class="panel-title payload-title">Payload</span>
+                        <span id="payload-badge" class="badge badge-info">EDIT DIRECTLY</span>
+                    </div>
+                    <div class="panel-content">
+                        <textarea id="payload-editor" spellcheck="false"></textarea>
+                        <div id="payload-notification" class="notification">Payload updated</div>
+                        <div id="payload-typing" class="typing-indicator">parsing<span class="ellipsis"></span></div>
+                    </div>
+                    <div id="error-message" class="error-msg" style="display: none;"></div>
+                </div>
+                
+                <div class="panel signature-panel">
+                    <div class="panel-header">
+                        <span class="panel-title signature-title">Signature Analysis</span>
+                        <span id="signature-badge" class="badge badge-info">TESTING MODE</span>
+                    </div>
+                    <div class="signature-content">
+                        <div id="signature-info">
+                            Algorithm: <span id="sig-algorithm">-</span><br>
+                            <code id="signature-value">-</code>
+                            <div id="payload-details" class="payload-details">
+                                <div class="payload-item"><strong>sub</strong> <span id="sub-value">-</span></div>
+                                <div class="payload-item"><strong>iat</strong> <span id="iat-value">-</span></div>
+                                <div class="payload-item"><strong>exp</strong> <span id="exp-value">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base64Url encoding and decoding functions
+        function base64UrlEncode(str) {
+            let base64 = btoa(unescape(encodeURIComponent(str)));
+            return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+        
+        function base64UrlDecode(base64Url) {
+            try {
+                const padding = '='.repeat((4 - base64Url.length % 4) % 4);
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/') + padding;
+                return decodeURIComponent(escape(atob(base64)));
+            } catch (e) {
+                throw new Error('Invalid base64 encoding');
+            }
+        }
+
+        // DOM elements
+        const jwtInput = document.getElementById('jwt-input');
+        const headerSegment = document.getElementById('header-segment');
+        const payloadSegment = document.getElementById('payload-segment');
+        const signatureSegment = document.getElementById('signature-segment');
+        const headerEditor = document.getElementById('header-editor');
+        const payloadEditor = document.getElementById('payload-editor');
+        const algorithmSelect = document.getElementById('algorithm');
+        const secretKey = document.getElementById('secret-key');
+        const errorMessage = document.getElementById('error-message');
+        const sigAlgorithm = document.getElementById('sig-algorithm');
+        const signatureValue = document.getElementById('signature-value');
+        const headerBadge = document.getElementById('header-badge');
+        const payloadBadge = document.getElementById('payload-badge');
+        const signatureBadge = document.getElementById('signature-badge');
+        const jwtNotification = document.getElementById('jwt-notification');
+        const headerNotification = document.getElementById('header-notification');
+        const payloadNotification = document.getElementById('payload-notification');
+        const headerTyping = document.getElementById('header-typing');
+        const payloadTyping = document.getElementById('payload-typing');
+        const subValue = document.getElementById('sub-value');
+        const iatValue = document.getElementById('iat-value');
+        const expValue = document.getElementById('exp-value');
+        const algChangeIndicator = document.getElementById('alg-change-indicator');
+        
+        let currentParsedToken = null;
+        let headerTypingTimer = null;
+        let payloadTypingTimer = null;
+        let headerUpdating = false;
+        let payloadUpdating = false;
+        let previousAlgorithm = null;
+        
+        // Parse JWT token
+        function parseJwt(token) {
+            try {
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid JWT format');
+                }
+                
+                const header = JSON.parse(base64UrlDecode(parts[0]));
+                const payload = JSON.parse(base64UrlDecode(parts[1]));
+                
+                return {
+                    header,
+                    payload,
+                    signature: parts[2],
+                    rawHeader: parts[0],
+                    rawPayload: parts[1]
+                };
+            } catch (e) {
+                showError('Invalid JWT token: ' + e.message);
+                return null;
+            }
+        }
+
+        // Show notification
+        function showNotification(element) {
+            element.classList.remove('show-notification');
+            void element.offsetWidth; // Force reflow for animation restart
+            element.classList.add('show-notification');
+        }
+        
+        // Show typing indicator
+        function showTyping(element) {
+            element.classList.add('typing');
+        }
+        
+        // Hide typing indicator
+        function hideTyping(element) {
+            element.classList.remove('typing');
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+        
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '-';
+            
+            try {
+                const date = new Date(timestamp * 1000);
+                return date.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+            } catch {
+                return timestamp;
+            }
+        }
+        
+        // Check token expiration
+        function checkExpiration(exp) {
+            if (!exp) return { status: 'UNKNOWN', badge: 'badge-info' };
+            
+            try {
+                const expDate = new Date(exp * 1000);
+                const now = new Date('2025-04-02T14:08:12Z'); // Using the current date from the context
+                
+                if (expDate < now) {
+                    return { status: 'EXPIRED', badge: 'badge-danger' };
+                }
+                
+                const timeLeftMs = expDate - now;
+                const hoursLeft = Math.floor(timeLeftMs / (1000 * 60 * 60));
+                
+                if (hoursLeft < 1) {
+                    const minsLeft = Math.floor(timeLeftMs / (1000 * 60));
+                    return { status: `EXPIRES IN ${minsLeft}m`, badge: 'badge-warning' };
+                }
+                
+                if (hoursLeft < 24) {
+                    return { status: `EXPIRES IN ${hoursLeft}h`, badge: 'badge-warning' };
+                }
+                
+                const daysLeft = Math.floor(hoursLeft / 24);
+                return { status: `EXPIRES IN ${daysLeft}d`, badge: 'badge-success' };
+                
+            } catch {
+                return { status: 'INVALID DATE', badge: 'badge-danger' };
+            }
+        }
+        
+        // Update display with token data
+        function updateDisplay(parsedJwt) {
+            if (!parsedJwt) {
+                clearDisplay();
+                return;
+            }
+            
+            // Store current token
+            currentParsedToken = parsedJwt;
+            
+            // Update algorithm dropdown (without triggering change event)
+            if (parsedJwt.header.alg) {
+                // Store previous algorithm for comparison
+                previousAlgorithm = algorithmSelect.value;
+                
+                // Update the select element
+                algorithmSelect.value = parsedJwt.header.alg;
+            }
+            
+            // Update token segment display
+            headerSegment.textContent = parsedJwt.rawHeader;
+            payloadSegment.textContent = parsedJwt.rawPayload;
+            signatureSegment.textContent = parsedJwt.signature;
+            
+            // Update decoded displays (only if not actively being edited)
+            if (!headerUpdating) {
+                headerEditor.value = JSON.stringify(parsedJwt.header, null, 2);
+            }
+            
+            if (!payloadUpdating) {
+                payloadEditor.value = JSON.stringify(parsedJwt.payload, null, 2);
+            }
+            
+            // Display signature info
+            sigAlgorithm.textContent = parsedJwt.header.alg;
+            signatureValue.textContent = parsedJwt.signature;
+            
+            // Update algorithm badge
+            if (parsedJwt.header.alg === 'none') {
+                signatureBadge.textContent = 'UNSIGNED';
+                signatureBadge.className = 'badge badge-danger';
+            } else if (parsedJwt.header.alg.startsWith('HS')) {
+                signatureBadge.textContent = 'HMAC';
+                signatureBadge.className = 'badge badge-info';
+            } else if (parsedJwt.header.alg.startsWith('RS') || parsedJwt.header.alg.startsWith('PS')) {
+                signatureBadge.textContent = 'RSA';
+                signatureBadge.className = 'badge badge-info';
+            } else if (parsedJwt.header.alg.startsWith('ES')) {
+                signatureBadge.textContent = 'ECDSA';
+                signatureBadge.className = 'badge badge-info';
+            }
+            
+            // Extract and display key payload items
+            subValue.textContent = parsedJwt.payload.sub || '-';
+            iatValue.textContent = parsedJwt.payload.iat ? formatTimestamp(parsedJwt.payload.iat) : '-';
+            
+            // Check expiration
+            if (parsedJwt.payload.exp) {
+                const expiration = checkExpiration(parsedJwt.payload.exp);
+                expValue.textContent = formatTimestamp(parsedJwt.payload.exp) + ' (' + expiration.status + ')';
+                payloadBadge.textContent = expiration.status;
+                payloadBadge.className = 'badge ' + expiration.badge;
+            } else {
+                expValue.textContent = 'No expiration';
+                payloadBadge.textContent = 'NO EXPIRY';
+                payloadBadge.className = 'badge badge-warning';
+            }
+            
+            hideError();
+        }
+        
+        // Clear display
+        function clearDisplay() {
+            headerSegment.textContent = '';
+            payloadSegment.textContent = '';
+            signatureSegment.textContent = '';
+            headerEditor.value = '';
+            payloadEditor.value = '';
+            sigAlgorithm.textContent = '-';
+            signatureValue.textContent = '-';
+            subValue.textContent = '-';
+            iatValue.textContent = '-';
+            expValue.textContent = '-';
+            currentParsedToken = null;
+            headerBadge.textContent = 'EDIT DIRECTLY';
+            headerBadge.className = 'badge badge-info';
+            payloadBadge.textContent = 'EDIT DIRECTLY';
+            payloadBadge.className = 'badge badge-info';
+            signatureBadge.textContent = 'TESTING MODE';
+            signatureBadge.className = 'badge badge-info';
+            hideError();
+        }
+        
+        // Create token from parts
+        function createToken(headerObj, payloadObj) {
+            try {
+                // Update algorithm in header based on selection
+                headerObj.alg = algorithmSelect.value;
+                headerObj.typ = headerObj.typ || 'JWT'; // Ensure typ is set
+                
+                // Create base64url encoded parts
+                const headerPart = base64UrlEncode(JSON.stringify(headerObj));
+                const payloadPart = base64UrlEncode(JSON.stringify(payloadObj));
+                
+                // For 'none' algorithm, signature is empty
+                if (headerObj.alg === 'none') {
+                    return `${headerPart}.${payloadPart}.`;
+                }
+                
+                // For other algorithms, create a testing signature
+                return `${headerPart}.${payloadPart}.invalid-signature-for-testing-${Date.now().toString(36)}`;
+            } catch (e) {
+                showError('Error creating token: ' + e.message);
+                return null;
+            }
+        }
+        
+        // Update token from editor
+        function updateTokenFromEditor(source) {
+            try {
+                let headerObj, payloadObj;
+                
+                // Parse header
+                try {
+                    headerObj = JSON.parse(headerEditor.value);
+                } catch (e) {
+                    if (source === 'header') {
+                        return; // Don't update if header JSON is invalid during typing
+                    }
+                    // Use current token's header or default
+                    headerObj = currentParsedToken ? currentParsedToken.header : { alg: algorithmSelect.value, typ: "JWT" };
+                }
+                
+                // Parse payload
+                try {
+                    payloadObj = JSON.parse(payloadEditor.value);
+                } catch (e) {
+                    if (source === 'payload') {
+                        return; // Don't update if payload JSON is invalid during typing
+                    }
+                    // Use current token's payload or default
+                    payloadObj = currentParsedToken ? currentParsedToken.payload : { sub: "1234567890", name: "John Doe" };
+                }
+                
+                // Create new token
+                const newToken = createToken(headerObj, payloadObj);
+                if (newToken) {
+                    jwtInput.value = newToken;
+                    const parsedJwt = parseJwt(newToken);
+                    updateDisplay(parsedJwt);
+                    
+                    // Show appropriate notification
+                    if (source === 'header') {
+                        showNotification(headerNotification);
+                    } else if (source === 'payload') {
+                        showNotification(payloadNotification);
+                    } else if (source === 'algorithm') {
+                        showNotification(jwtNotification);
+                        
+                        // Show algorithm change indicator
+                        algChangeIndicator.textContent = `CHANGED: ${previousAlgorithm} → ${algorithmSelect.value}`;
+                        algChangeIndicator.className = 'badge badge-change';
+                        
+                        // Flash the token input to indicate the change
+                        jwtInput.classList.add('algorithm-change');
+                        setTimeout(() => {
+                            jwtInput.classList.remove('algorithm-change');
+                        }, 500);
+                        
+                        // Clear the indicator after a few seconds
+                        setTimeout(() => {
+                            algChangeIndicator.textContent = '';
+                            algChangeIndicator.className = 'badge';
+                        }, 5000);
+                    }
+                }
+            } catch (e) {
+                showError('Error updating token: ' + e.message);
+            }
+        }
+        
+        // Event listeners
+        jwtInput.addEventListener('input', function() {
+            const token = this.value.trim();
+            
+            if (!token) {
+                clearDisplay();
+                return;
+            }
+            
+            const parsedJwt = parseJwt(token);
+            if (parsedJwt) {
+                updateDisplay(parsedJwt);
+            }
+        });
+        
+        // Algorithm selection change
+        algorithmSelect.addEventListener('change', function() {
+            // Save the previous algorithm first (in case updateTokenFromEditor modifies it)
+            const oldAlg = previousAlgorithm || this.value;
+            previousAlgorithm = oldAlg;
+            
+            if (currentParsedToken) {
+                // Update the algorithm in the header object and recreate token
+                updateTokenFromEditor('algorithm');
+            }
+        });
+        
+        // Header editing
+        headerEditor.addEventListener('input', function() {
+            headerUpdating = true;
+            
+            // Show typing indicator
+            showTyping(headerTyping);
+            
+            // Clear previous timer
+            if (headerTypingTimer) {
+                clearTimeout(headerTypingTimer);
+            }
+            
+            // Set new timer
+            headerTypingTimer = setTimeout(() => {
+                hideTyping(headerTyping);
+                
+                try {
+                    JSON.parse(this.value);
+                    hideError();
+                    updateTokenFromEditor('header');
+                } catch (e) {
+                    // Don't show error during typing
+                }
+                
+                headerUpdating = false;
+            }, 500);
+        });
+        
+        // Payload editing
+        payloadEditor.addEventListener('input', function() {
+            payloadUpdating = true;
+            
+            // Show typing indicator
+            showTyping(payloadTyping);
+            
+            // Clear previous timer
+            if (payloadTypingTimer) {
+                clearTimeout(payloadTypingTimer);
+            }
+            
+            // Set new timer
+            payloadTypingTimer = setTimeout(() => {
+                hideTyping(payloadTyping);
+                
+                try {
+                    JSON.parse(this.value);
+                    hideError();
+                    updateTokenFromEditor('payload');
+                } catch (e) {
+                    // Don't show error during typing
+                }
+                
+                payloadUpdating = false;
+            }, 500);
+        });
+        
+        // Initialize with a sample token
+        const sampleToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2NDMzNjMxMDAsImV4cCI6MTc0MzM5OTEyM30.mFJSKv7CePUy9H6FxP5HdJnxKjZCQ3wIafsPwuHWNu0';
+        jwtInput.value = sampleToken;
+        const parsedJwt = parseJwt(sampleToken);
+        if (parsedJwt) {
+            updateDisplay(parsedJwt);
+        }
+    </script>
+</body>
+</html>
